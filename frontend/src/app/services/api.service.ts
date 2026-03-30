@@ -8,7 +8,8 @@ import {
   PremiumBreakdown, DiscountRule, EducationContent, Claim, UnderwriterStats, UserRewardResponse,
   RegisterRequest, LoginRequest, ResetPasswordRequest, PremiumCalculationLog
 } from '../models/models';
-const API = 'http://localhost:8080';
+
+const API = 'https://iqsure-app-12345-bpcmgcfpdmgegpa4.eastasia-01.azurewebsites.net';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   constructor(private http: HttpClient) {}
