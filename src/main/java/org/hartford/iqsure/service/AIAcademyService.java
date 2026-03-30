@@ -9,14 +9,12 @@ import org.hartford.iqsure.exception.ResourceNotFoundException;
 import org.hartford.iqsure.repository.AttemptRepository;
 import org.hartford.iqsure.repository.UserRepository;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,7 +36,7 @@ public class AIAcademyService {
     }
 
     // ============================================================
-    // 🎯 GAMIFICATION LOGIC (UNCHANGED)
+    // 🎯 GAMIFICATION LOGIC
     // ============================================================
 
     @Transactional
@@ -111,37 +109,37 @@ public class AIAcademyService {
     // 🤖 AI LESSON GENERATION (FIXED)
     // ============================================================
 
-   public EducationContentDTO generateLesson(String topic, String language) {
+    public EducationContentDTO generateLesson(String topic, String language) {
 
-    try {
-        log.info("Generating lesson for topic: {} in {}", topic, language);
+        try {
+            log.info("Generating lesson for topic: {} in {}", topic, language);
 
-        String prompt = String.format(
-                "Generate a clear, structured educational lesson on '%s' in %s.",
-                topic, language
-        );
+            String prompt = String.format(
+                    "Generate a clear, structured educational lesson on '%s' in %s.",
+                    topic, language
+            );
 
-        String response = chatClient.prompt()
-                .user(prompt)
-                .call()
-                .content();
+            String response = chatClient.prompt()
+                    .user(prompt)
+                    .call()
+                    .content();
 
-        return new EducationContentDTO(
-                null,
-                topic,
-                topic,
-                response,
-                language
-        );
+            return EducationContentDTO.builder()
+                    .id(null)
+                    .title(topic)
+                    .topic(topic)
+                    .content(response)
+                    .language(language)
+                    .build();
 
-    } catch (Exception e) {
-        log.error("❌ AI Lesson Generation Failed", e);
-        throw new RuntimeException("AI service failed. Please try again later.");
+        } catch (Exception e) {
+            log.error("❌ AI Lesson Generation Failed", e);
+            throw new RuntimeException("AI service failed. Please try again later.");
+        }
     }
-}
 
     // ============================================================
-    // 🤖 FOLLOW-UP DOUBTS (FIXED)
+    // 🤖 FOLLOW-UP
     // ============================================================
 
     public String generateFollowUp(String context, String doubt, String language) {
@@ -164,7 +162,7 @@ public class AIAcademyService {
     }
 
     // ============================================================
-    // 🤖 QUIZ GENERATION (SAFE VERSION)
+    // 🤖 QUIZ (SAFE VERSION)
     // ============================================================
 
     public List<QuestionResponseDTO> generateQuiz(String context, String language) {
@@ -180,7 +178,6 @@ public class AIAcademyService {
                     .call()
                     .content();
 
-            // ⚠️ Simplified fallback (no JSON parsing)
             QuestionResponseDTO q = QuestionResponseDTO.builder()
                     .text("AI Generated Question")
                     .options(List.of("Option A", "Option B", "Option C", "Option D"))
