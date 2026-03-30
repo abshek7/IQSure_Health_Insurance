@@ -111,34 +111,34 @@ public class AIAcademyService {
     // 🤖 AI LESSON GENERATION (FIXED)
     // ============================================================
 
-    public EducationContentDTO generateLesson(String topic, String language) {
+   public EducationContentDTO generateLesson(String topic, String language) {
 
-        try {
-            log.info("Generating lesson for topic: {} in {}", topic, language);
+    try {
+        log.info("Generating lesson for topic: {} in {}", topic, language);
 
-            String prompt = String.format(
-                    "Generate a clear, structured educational lesson on '%s' in %s. " +
-                    "Include headings and explanations.",
-                    topic, language
-            );
+        String prompt = String.format(
+                "Generate a clear, structured educational lesson on '%s' in %s.",
+                topic, language
+        );
 
-            String response = chatClient.prompt()
-                    .user(prompt)
-                    .call()
-                    .content();   // ✅ FIXED (no JSON parsing)
+        String response = chatClient.prompt()
+                .user(prompt)
+                .call()
+                .content();
 
-            EducationContentDTO dto = new EducationContentDTO();
-            dto.setTitle(topic);
-            dto.setTopic(topic);
-            dto.setContent(response);
+        return new EducationContentDTO(
+                null,
+                topic,
+                topic,
+                response,
+                language
+        );
 
-            return dto;
-
-        } catch (Exception e) {
-            log.error("❌ AI Lesson Generation Failed", e);
-            throw new RuntimeException("AI service failed. Please try again later.");
-        }
+    } catch (Exception e) {
+        log.error("❌ AI Lesson Generation Failed", e);
+        throw new RuntimeException("AI service failed. Please try again later.");
     }
+}
 
     // ============================================================
     // 🤖 FOLLOW-UP DOUBTS (FIXED)
