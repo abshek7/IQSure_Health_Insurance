@@ -6,7 +6,7 @@ name: Build and deploy JAR app to Azure Web App - iqsure-app-12345
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
-        run: mvn clean install -DskipTests
+        run: mvn clean package -Dmaven.test.skip=true
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -50,4 +50,4 @@ jobs:
           app-name: 'iqsure-app-12345'
           slot-name: 'Production'
           package: '*.jar'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3B5B37583A924525AEE04E2B227C3A0A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2D64E6144F3C468F81E74547180C3E18 }}
